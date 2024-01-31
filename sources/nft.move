@@ -69,7 +69,8 @@ module overmind::NonFungibleToken {
     //==============================================================================================
     // Constants - Add your constants here (if any)
     //==============================================================================================
-
+    const AMOUNT_PAYMENT: u64 = 1_000_000_000;
+    
     //==============================================================================================
     // Error codes - DO NOT MODIFY
     //==============================================================================================
@@ -189,7 +190,25 @@ module overmind::NonFungibleToken {
         minter_cap: &mut MinterCap,
         ctx: &mut TxContext, 
     ) {
-        
+        validate_payment(payment_coin);
+
+       let nft = NonFungibleToken {
+            id:  object::new(ctx),
+            name: string::utf8(nft_name),
+            description: string::utf8(nft_description),
+            image: url::new_unsafe_from_bytes(nft_image)
+        };
+        let nft_id = object::id(&nft);
+
+        let c1 = coin::take(coin::balance_mut(payment_coin), AMOUNT_PAYMENT, ctx);
+        coin::put(&mut minter_cap.sales, c1);
+
+        transfer::transfer(nft, recipient);
+
+        event::emit(NonFungibleTokenMinted {
+            nft_id,
+            recipient
+        });
     }
 
     /* 
@@ -266,7 +285,9 @@ module overmind::NonFungibleToken {
     //==============================================================================================
     // Validation functions - Add your validation functions here (if any)
     //==============================================================================================
-
+    fun validate_payment(payment_coin: &Coin<SUI>) {
+        assert!(coin::value(payment_coin) >= AMOUNT_PAYMENT, EInsufficientPayment);
+    }
     //==============================================================================================
     // Tests - DO NOT MODIFY
     //==============================================================================================
