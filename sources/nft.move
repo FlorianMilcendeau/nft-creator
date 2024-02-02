@@ -250,8 +250,6 @@ module overmind::NonFungibleToken {
             new_nft_id: object::uid_to_inner(&nft.id),
         });
 
-        let nft1_id = object::uid_to_inner(&nft1_uid);
-        let nft2_id = object::uid_to_inner(&nft2_uid);
         object::delete(nft1_uid);
         object::delete(nft2_uid);
 
