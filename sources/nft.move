@@ -70,7 +70,7 @@ module overmind::NonFungibleToken {
     // Constants - Add your constants here (if any)
     //==============================================================================================
     const AMOUNT_PAYMENT: u64 = 1_000_000_000;
-    
+
     //==============================================================================================
     // Error codes - DO NOT MODIFY
     //==============================================================================================
@@ -281,7 +281,11 @@ module overmind::NonFungibleToken {
         @param nft - the NFT object
     */
     public fun burn_nft(nft: NonFungibleToken) {
-        
+        let NonFungibleToken { id: nft_uid, name: _, description: _, image: _ } = nft; 
+        let nft_id = object::uid_to_inner(&nft_uid);
+        object::delete(nft_uid);
+
+        event::emit(NonFungibleTokenDeleted { nft_id } );
     }
 
     /* 
