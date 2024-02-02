@@ -299,7 +299,7 @@ module overmind::NonFungibleToken {
         @return the NFT's `description`
     */
     public fun description(nft: &NonFungibleToken): String {
-
+        nft.description
     }
 
     /* 
